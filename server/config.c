@@ -1293,21 +1293,16 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 	ap_directive_t **leaf_cache = NULL;
 
 	if(current) {
-		ap_directive_t *parent = NULL;
-
-				
-		if(!current->parent) {
-			leaf_cache = &ap_conftree_last;
-		}
+		leaf_cache = &(current->last);		
 			
 		if(leaf_cache && *leaf_cache) {
 			current = *leaf_cache;
 		}
-/*		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
 				"[current] %ld %ld %s",
-				current->parent, leaf_cache, current->directive
+				current->parent, *leaf_cache, current->directive
 				);
-				*/
+				
 	}
 	/* End hack */
 

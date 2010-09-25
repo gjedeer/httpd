@@ -71,7 +71,7 @@ struct ap_directive_t {
 	 *  non-NULL list element. This way we don't have to traverse
 	 *  whole tree
 	 */
-//	struct ap_directive_t *last;
+	struct ap_directive_t *last;
 };
 
 /**
