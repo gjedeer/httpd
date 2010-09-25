@@ -64,12 +64,23 @@ struct ap_directive_t {
     const char *filename;
     /** The line number the directive was on */
     int line_num;
+
+	/** GDR!'s hack
+	 *  This is supposed to act as a cache for ap_build_config
+	 *  in the first node on a given tree leaf, it keeps last known
+	 *  non-NULL list element. This way we don't have to traverse
+	 *  whole tree
+	 */
+//	struct ap_directive_t *last;
 };
 
 /**
  * The root of the configuration tree
  */
 AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
+
+/* GDR!'s hack - last element cache for top-level leafs */
+AP_DECLARE_DATA extern ap_directive_t *ap_conftree_last;
 
 /**
  * Add a node to the configuration tree.

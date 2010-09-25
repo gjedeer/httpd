@@ -64,6 +64,7 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config = NULL;
 AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines = NULL;
 
 AP_DECLARE_DATA ap_directive_t *ap_conftree = NULL;
+AP_DECLARE_DATA ap_directive_t *ap_conftree_last = NULL;
 
 APR_HOOK_STRUCT(
            APR_HOOK_LINK(header_parser)
@@ -1285,11 +1286,44 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
     char *l = apr_palloc (temp_pool, MAX_STRING_LEN);
     const char *errmsg;
 
+	/** GDR!'s hack
+	 *  Instead of iterating whole level of leafs, jump to 
+	 *  last known non-NULL leaf
+	 */
+	ap_directive_t **leaf_cache = NULL;
+
+	if(current) {
+		ap_directive_t *parent = NULL;
+
+				
+		if(!current->parent) {
+			leaf_cache = &ap_conftree_last;
+		}
+			
+		if(leaf_cache && *leaf_cache) {
+			current = *leaf_cache;
+		}
+/*		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+				"[current] %ld %ld %s",
+				current->parent, leaf_cache, current->directive
+				);
+				*/
+	}
+	/* End hack */
+
     if (current != NULL) {
         while (current->next) {
             current = current->next;
         }
     }
+
+	/** GDR!'s hack
+	 *  Update last known leaf
+	 */
+	if(leaf_cache) {
+		*leaf_cache = current;
+	}
+	/* End hack */
 
     while (!(ap_cfg_getline(l, MAX_STRING_LEN, parms->config_file))) {
         errmsg = ap_build_config_sub(p, temp_pool, l, parms,
@@ -2155,6 +2189,8 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 
 static void init_config_globals(apr_pool_t *p)
 {
+	/* GDR!'s hack - invalidate pointer cache */
+	ap_conftree_last = NULL;
     /* Global virtual host hash bucket pointers.  Init to null. */
     ap_init_vhost_config(p);
 }
