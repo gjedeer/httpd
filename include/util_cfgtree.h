@@ -79,9 +79,6 @@ struct ap_directive_t {
  */
 AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
 
-/* GDR!'s hack - last element cache for top-level leafs */
-AP_DECLARE_DATA extern ap_directive_t *ap_conftree_last;
-
 /**
  * Add a node to the configuration tree.
  * @param parent The current parent node.  If the added node is a first_child,

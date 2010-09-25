@@ -692,7 +692,6 @@ int main(int argc, const char * const argv[])
          * memory.  rbb
          */
         ap_conftree = NULL;
-		ap_conftree_last = NULL;
         apr_pool_create(&ptemp, pconf);
         apr_pool_tag(ptemp, "ptemp");
         ap_server_root = def_server_root;

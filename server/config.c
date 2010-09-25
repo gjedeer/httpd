@@ -64,7 +64,6 @@ AP_DECLARE_DATA apr_array_header_t *ap_server_post_read_config = NULL;
 AP_DECLARE_DATA apr_array_header_t *ap_server_config_defines = NULL;
 
 AP_DECLARE_DATA ap_directive_t *ap_conftree = NULL;
-AP_DECLARE_DATA ap_directive_t *ap_conftree_last = NULL;
 
 APR_HOOK_STRUCT(
            APR_HOOK_LINK(header_parser)
@@ -1298,11 +1297,6 @@ AP_DECLARE(const char *) ap_build_config(cmd_parms *parms,
 		if(leaf_cache && *leaf_cache) {
 			current = *leaf_cache;
 		}
-		ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
-				"[current] %ld %ld %s",
-				current->parent, *leaf_cache, current->directive
-				);
-				
 	}
 	/* End hack */
 
@@ -2184,8 +2178,6 @@ AP_DECLARE(void) ap_fixup_virtual_hosts(apr_pool_t *p, server_rec *main_server)
 
 static void init_config_globals(apr_pool_t *p)
 {
-	/* GDR!'s hack - invalidate pointer cache */
-	ap_conftree_last = NULL;
     /* Global virtual host hash bucket pointers.  Init to null. */
     ap_init_vhost_config(p);
 }
